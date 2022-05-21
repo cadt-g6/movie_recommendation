@@ -14,7 +14,10 @@ class DatasetType(Enum):
         return prefix + "/" + "datasets/samples" + "/" + self.value
 
     def original_path(self, prefix: str = "..") -> str:
-        return prefix + "/" +"datasets/original" + "/" + self.value
+        return prefix + "/" + "datasets/original" + "/" + self.value
+
+    def cleaned_path(self, prefix: str = "..") -> str:
+        return prefix + "/" + "datasets/cleaned" + "/" + self.value
 
     # source: SourceType
     def path(self, source, prefix: str = "..") -> str:
