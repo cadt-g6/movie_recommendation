@@ -25,7 +25,7 @@ class ContentbasedModel:
         #Construct the required TF-IDF matrix by fitting and transforming the data
         tfidf_matrix = tfidf.fit_transform(metadata['overview'])
 
-        cosine_sim = linear_kernel(tfidf_matrix[:30000], tfidf_matrix[:30000])
+        cosine_sim = linear_kernel(tfidf_matrix[:31000], tfidf_matrix[:31000])
         return cosine_sim
 
 
@@ -78,12 +78,14 @@ class ContentbasedModel:
 
         # # Get the pairwsie similarity scores of all movies with that movie
         sim_scores = list(enumerate(cosine_sim[idx]))
+        # print(sim_scores[:10])
 
         # # Sort the movies based on the similarity scores
-        sim_scores = sorted(sim_scores, key=lambda x: x[1], reverse=True)
+        # sim_scores = sorted(sim_scores.all(), key=lambda x: x[1], reverse=True)
+        sim_scores.sort(key=lambda x: x[1].all(), reverse=True)
 
         # # Get the scores of the 10 most similar movies
-        sim_scores = sim_scores[1:11]
+        sim_scores = sim_scores[1:12]
 
         # # Return the top 10 most similar movies
         return self.generateRecommendDataFrame(sim_scores,metadata)
@@ -115,7 +117,7 @@ class ContentbasedModel:
         sim_scores = list(enumerate(cosine_sim[idx]))
 
         # # Sort the movies based on the similarity scores
-        sim_scores = sorted(sim_scores, key=lambda x: x[1], reverse=True)
+        sim_scores = sorted(sim_scores, key=lambda x: x[1].all(), reverse=True)
 
         # # Get the scores of the 10 most similar movies
         sim_scores = sim_scores[1:11]
