@@ -10,10 +10,35 @@ from sklearn.metrics.pairwise import linear_kernel, cosine_similarity
 
 
 
-class contentbased_model:
-    def __init__(self, movie_title,metadata):
-        self.movie_title = movie_title
+class ContentbasedModel:
+    def __init__(self):
+        pass
+
+    def trainingDataBasesOnOverview(self,metadata):
         self.metadata = metadata
+        tfidf = TfidfVectorizer(stop_words = 'english',max_features=1000000)
+        
+        #Replace NaN with an empty string
+        metadata['overview'] = metadata['overview'].fillna('')
+
+        #Construct the required TF-IDF matrix by fitting and transforming the data
+        tfidf_matrix = tfidf.fit_transform(metadata['overview'])
+
+        cosine_sim = linear_kernel(tfidf_matrix[:33000], tfidf_matrix[:33000])
+        return cosine_sim
+
+
+    def trainingDataBasedOnGenres(self,metadata):
+        self.metadata = metadata
+        metadata = self.dataCleansing()
+        metadata = metadata.apply(lambda metadata: self.cleanGenres(metadata), axis=1)
+        
+        count = CountVectorizer(stop_words='english')
+        count_matrix = count.fit_transform(metadata['genres_soup'])
+
+        cosine_sim = cosine_similarity(count_matrix[:31000], count_matrix[:31000])
+
+        return cosine_sim
     
     def generateRecommendDataFrame(self,sim_scores,metadata):
         # sum = 0
@@ -33,19 +58,19 @@ class contentbased_model:
         recommended_movies_df = pd.DataFrame(recommended_movies,columns=['id','title','accuracy_score'])
         return recommended_movies_df
 
-    def basedOnGenres(self):
+    def getRecommendataionbasedOnGenres(self,movie_title,cosine_sim):
         metadata = self.dataCleansing()
         metadata = metadata.apply(lambda metadata: self.cleanGenres(metadata), axis=1)
 
-        count = CountVectorizer(stop_words='english')
-        count_matrix = count.fit_transform(metadata['genres_soup'])
+        # count = CountVectorizer(stop_words='english')
+        # count_matrix = count.fit_transform(metadata['genres_soup'])
 
-        cosine_sim = cosine_similarity(count_matrix[:31000], count_matrix[:31000])
+        # cosine_sim = cosine_similarity(count_matrix[:31000], count_matrix[:31000])
 
         # #Construct a reverse map of indices and movie titles
         indices = pd.Series(metadata.index, index=metadata['title']).drop_duplicates()
 
-        title = self.movie_title
+        title = movie_title
 
         # # Get the index of the movie that matches the title
         idx = indices[title]
@@ -64,23 +89,23 @@ class contentbased_model:
 
 
 
-    def basedOnOverview(self):
+    def getRecommendationbasedOnOverview(self,movie_title,cosine_sim):
         metadata = self.dataCleansing()
 
-        tfidf = TfidfVectorizer(stop_words = 'english',max_features=1000000)
+        # tfidf = TfidfVectorizer(stop_words = 'english',max_features=1000000)
         
-        #Replace NaN with an empty string
-        metadata['overview'] = metadata['overview'].fillna('')
+        # #Replace NaN with an empty string
+        # metadata['overview'] = metadata['overview'].fillna('')
 
-        #Construct the required TF-IDF matrix by fitting and transforming the data
-        tfidf_matrix = tfidf.fit_transform(metadata['overview'])
+        # #Construct the required TF-IDF matrix by fitting and transforming the data
+        # tfidf_matrix = tfidf.fit_transform(metadata['overview'])
 
-        cosine_sim = linear_kernel(tfidf_matrix[:33000], tfidf_matrix[:33000])
+        # cosine_sim = linear_kernel(tfidf_matrix[:33000], tfidf_matrix[:33000])
 
         # #Construct a reverse map of indices and movie titles
         indices = pd.Series(metadata.index, index=metadata['title']).drop_duplicates()
 
-        title = self.movie_title
+        title = movie_title
 
         # # Get the index of the movie that matches the title
         idx = indices[title]
