@@ -1,4 +1,5 @@
 import pandas as pd
+import re
 
 
 class Helper:
@@ -9,7 +10,7 @@ class Helper:
     def find_all_genres(genres: pd.Series):
         genres = genres.str.split("|")
         genres_cleaned = [item for item in genres.to_list()
-                        if isinstance(item, list)]
+                          if isinstance(item, list)]
 
         all_movie_genres = "|".join([
             "|".join(i)
@@ -18,3 +19,7 @@ class Helper:
 
         all_movie_genres = set(all_movie_genres)
         return list(all_movie_genres)
+
+    @staticmethod
+    def encode_title(title: str):
+        return re.sub(r'\W+', ' ', title)
