@@ -12,7 +12,7 @@ class Top10MoviesAnalystic:
     def top_10_based_on_popularity(self):
         top_popular_movies = self.movie_df[:31000].sort_values(
             by=['popularity'], ascending=False)
-        return top_popular_movies.head(1)['title'].to_list()
+        return top_popular_movies.head(10)['title'].to_list()
 
     def top_10_based_on_rating(self):
         top_avg_quan_movies = self.movie_df[:31000].sort_values(
