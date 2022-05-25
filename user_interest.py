@@ -6,4 +6,5 @@ from lib.services.user_interest_service import UserInterestService
 service = UserInterestService(user_id=123963, source_prefix=".")
 interest = service.exec()
 
+service.render(interest)
 print_dict(interest)

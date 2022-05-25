@@ -1,4 +1,5 @@
 import pandas as pd
+from lib.services.seaborn_service import SeabornService
 
 from lib.utils.helper import Helper
 from lib.types.dataset_type import DatasetType
@@ -14,13 +15,18 @@ class UserInterestService:
     def exec(self):
         movies_df = self.fetch_movie_df()
         rating_df = self.fetch_rating_df()
-        
+
+        # list of rating from `user_id`
         rating_per_user_df = self.fetch_rating_per_user_df(
             self.user_id, rating_df)
+
+        # list of movies that `user_id` have rated
         movies_per_user_df = self.fetch_movies_per_user_df(
             rating_per_user_df, movies_df)
+
+        # all genre that user rated with rating average
         avg_rating_dict = self.fetch_avg_rating_dict(movies_per_user_df)
-        
+
         return avg_rating_dict
 
     def fetch_movie_df(self) -> pd.DataFrame:
@@ -92,3 +98,19 @@ class UserInterestService:
 
         avg_rating_dict = {key: value for key, value in dict_sorted}
         return avg_rating_dict
+
+    def render(self, avg_rating_dict: dict):
+        genre_df = pd.DataFrame(
+            columns=['genre', 'avg_rating'],
+            data=avg_rating_dict.items()
+        )
+        
+        file_name = 'fav_genres_for_uid_{}'.format(self.user_id)
+        service = SeabornService(
+            x=genre_df['avg_rating'],
+            y=genre_df['genre'],
+            file_name=file_name,
+            file_prefix="."
+        )
+
+        service.render()
