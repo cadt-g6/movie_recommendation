@@ -6,8 +6,8 @@ import pandas as pd
 
 
 class Top10MoviesAnalystic:
-    def __init__(self, data):
-        self.movie_df = data
+    def __init__(self):
+        self.movie_df = pd.read_csv(DatasetType.movies_metadata.cleaned_path())
 
     def top_10_based_on_popularity(self):
         top_popular_movies = self.movie_df[:31000].sort_values(
