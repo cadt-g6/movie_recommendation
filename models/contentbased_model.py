@@ -16,6 +16,7 @@ class ContentbasedModel:
 
     def trainingDataBasesOnOverview(self,metadata):
         self.metadata = metadata
+        metadata = self.dataCleansing()
         tfidf = TfidfVectorizer(stop_words = 'english',max_features=1000000)
         
         #Replace NaN with an empty string
@@ -24,7 +25,7 @@ class ContentbasedModel:
         #Construct the required TF-IDF matrix by fitting and transforming the data
         tfidf_matrix = tfidf.fit_transform(metadata['overview'])
 
-        cosine_sim = linear_kernel(tfidf_matrix[:33000], tfidf_matrix[:33000])
+        cosine_sim = linear_kernel(tfidf_matrix[:30000], tfidf_matrix[:30000])
         return cosine_sim
 
 
@@ -38,7 +39,7 @@ class ContentbasedModel:
 
         cosine_sim = cosine_similarity(count_matrix[:31000], count_matrix[:31000])
 
-        return cosine_sim
+        return cosine_sim,metadata
     
     def generateRecommendDataFrame(self,sim_scores,metadata):
         # sum = 0
@@ -58,9 +59,9 @@ class ContentbasedModel:
         recommended_movies_df = pd.DataFrame(recommended_movies,columns=['id','title','accuracy_score'])
         return recommended_movies_df
 
-    def getRecommendataionbasedOnGenres(self,movie_title,cosine_sim):
-        metadata = self.dataCleansing()
-        metadata = metadata.apply(lambda metadata: self.cleanGenres(metadata), axis=1)
+    def getRecommendataionbasedOnGenres(self,movie_title,cosine_sim,data):
+        metadata = data
+        # metadata = metadata.apply(lambda metadata: self.cleanGenres(metadata), axis=1)
 
         # count = CountVectorizer(stop_words='english')
         # count_matrix = count.fit_transform(metadata['genres_soup'])
