@@ -13,7 +13,7 @@ class UserInterestService:
         self.source_prefix = source_prefix
 
     def exec(self):
-        movies_df = self.fetch_movie_df()
+        self.movies_df = self.fetch_movie_df()
         rating_df = self.fetch_rating_df()
 
         # list of rating from `user_id`
@@ -22,7 +22,7 @@ class UserInterestService:
 
         # list of movies that `user_id` have rated
         movies_per_user_df = self.fetch_movies_per_user_df(
-            rating_per_user_df, movies_df)
+            rating_per_user_df, self.movies_df)
 
         # all genre that user rated with rating average
         avg_rating_dict = self.fetch_avg_rating_dict(movies_per_user_df)
