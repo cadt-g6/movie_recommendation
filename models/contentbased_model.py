@@ -25,7 +25,7 @@ class ContentbasedModel:
         #Construct the required TF-IDF matrix by fitting and transforming the data
         tfidf_matrix = tfidf.fit_transform(metadata['overview'])
 
-        cosine_sim = linear_kernel(tfidf_matrix[:31000], tfidf_matrix[:31000])
+        cosine_sim = linear_kernel(tfidf_matrix[:33000], tfidf_matrix[:33000])
         return cosine_sim
 
 
