@@ -4,7 +4,7 @@ import pandas as pd
 from sklearn.feature_extraction.text import CountVectorizer
 from sklearn.metrics.pairwise import cosine_similarity
 
-class reRank_model:
+class ReRankModel:
     def __init__(self, movie_title,data):
         self.movie_title = movie_title
         self.data = data
